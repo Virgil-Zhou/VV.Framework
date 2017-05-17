@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AADF1055-D9E3-4BBA-B6F5-B12739DCF43F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VV.Framework.Core</RootNamespace>
+    <AssemblyName>VV.Framework.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="API\IJsonSerialization.cs" />
+    <Compile Include="API\IService.cs" />
+    <Compile Include="Attribute\DefaultServiceAttribute.cs" />
+    <Compile Include="API\ICache.cs" />
+    <Compile Include="Extension\ByteExtension.cs" />
+    <Compile Include="Extension\DecimalExtension.cs" />
+    <Compile Include="Extension\DoubleExtension.cs" />
+    <Compile Include="Extension\StringExtension.cs" />
+    <Compile Include="FrameworkConfig.cs" />
+    <Compile Include="Model\Constant.cs" />
+    <Compile Include="Model\ImageFormat.cs" />
+    <Compile Include="Model\ImageFormatCollection.cs" />
+    <Compile Include="Model\PostedFileData.cs" />
+    <Compile Include="Model\VerifyResult.cs" />
+    <Compile Include="Model\WebRequestContentType.cs" />
+    <Compile Include="Model\WebRequestParameter.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\Default\JsonSerializationService.cs" />
+    <Compile Include="Service\ServiceCollection.cs" />
+    <Compile Include="Service\ServiceContainer.cs" />
+    <Compile Include="Utility\AlgorithmUtility.cs" />
+    <Compile Include="Utility\CompressionUtility.cs" />
+    <Compile Include="Utility\EmailUtility.cs" />
+    <Compile Include="Utility\FileUtility.cs" />
+    <Compile Include="Utility\ImageUtility.cs" />
+    <Compile Include="Utility\ModelValidatorUtility.cs" />
+    <Compile Include="Utility\RegexUtility.cs" />
+    <Compile Include="Utility\WebRequestUtility_Partial1.cs" />
+    <Compile Include="Utility\WebRequestUtility_Partial2.cs" />
+    <Compile Include="Utility\XMLUtility.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Cache\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

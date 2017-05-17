@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace VV.Framework.Core
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    [DefaultService]
+    public class JsonSerializationService : IJsonSerialization
+    {
+        public T Deserialize<T>(string jsonStr) where T : class, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string Serialize(object obj)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

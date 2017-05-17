@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.7
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VV.Framework.Core", "VV.Framework.Core\VV.Framework.Core.csproj", "{AADF1055-D9E3-4BBA-B6F5-B12739DCF43F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VV.Framework.Balance", "VV.Framework.Balance\VV.Framework.Balance.csproj", "{AA8E35CA-E7EF-4AA9-94DC-8FF9EBC40C8C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AADF1055-D9E3-4BBA-B6F5-B12739DCF43F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AADF1055-D9E3-4BBA-B6F5-B12739DCF43F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AADF1055-D9E3-4BBA-B6F5-B12739DCF43F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AADF1055-D9E3-4BBA-B6F5-B12739DCF43F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA8E35CA-E7EF-4AA9-94DC-8FF9EBC40C8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA8E35CA-E7EF-4AA9-94DC-8FF9EBC40C8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA8E35CA-E7EF-4AA9-94DC-8FF9EBC40C8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA8E35CA-E7EF-4AA9-94DC-8FF9EBC40C8C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
