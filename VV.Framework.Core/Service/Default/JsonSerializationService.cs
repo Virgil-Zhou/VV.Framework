@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace VV.Framework.Core
 {
     /// <summary>
-    /// 
+    /// 提供Json序列化服务
     /// </summary>
     [DefaultService]
     public class JsonSerializationService : IJsonSerialization

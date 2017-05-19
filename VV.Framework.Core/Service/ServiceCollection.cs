@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VV.Framework.Core.Service
+namespace VV.Framework.Core
 {
     /// <summary>
     /// 服务集合
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">类型参数</typeparam>
     internal class ServiceCollection<T> : Dictionary<Type, T>
     {
         static ServiceTypeComparer serviceTypeComparer = new ServiceTypeComparer();
