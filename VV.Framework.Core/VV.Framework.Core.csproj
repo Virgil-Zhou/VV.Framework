@@ -34,6 +34,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,6 +47,7 @@
     <Compile Include="API\IService.cs" />
     <Compile Include="Attribute\DefaultServiceAttribute.cs" />
     <Compile Include="API\ICache.cs" />
+    <Compile Include="Attribute\RequiredThrowAttribute.cs" />
     <Compile Include="Extension\ByteExtension.cs" />
     <Compile Include="Extension\DecimalExtension.cs" />
     <Compile Include="Extension\DoubleExtension.cs" />
@@ -56,8 +58,10 @@
     <Compile Include="Model\ImageFormatCollection.cs" />
     <Compile Include="Model\PostedFileData.cs" />
     <Compile Include="Model\VerifyResult.cs" />
+    <Compile Include="Model\WebContext.cs" />
+    <Compile Include="Model\WebRequest.cs" />
     <Compile Include="Model\WebRequestContentType.cs" />
-    <Compile Include="Model\WebRequestParameter.cs" />
+    <Compile Include="Model\WebResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\Default\JsonSerializationService.cs" />
     <Compile Include="Service\ServiceCollection.cs" />
