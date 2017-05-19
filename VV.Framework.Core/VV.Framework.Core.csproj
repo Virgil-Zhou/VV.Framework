@@ -66,6 +66,7 @@
     <Compile Include="Utility\CompressionUtility.cs" />
     <Compile Include="Utility\EmailUtility.cs" />
     <Compile Include="Utility\FileUtility.cs" />
+    <Compile Include="Utility\FTPUtility.cs" />
     <Compile Include="Utility\ImageUtility.cs" />
     <Compile Include="Utility\ModelValidatorUtility.cs" />
     <Compile Include="Utility\RegexUtility.cs" />
