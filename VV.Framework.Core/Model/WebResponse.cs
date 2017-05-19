@@ -7,16 +7,10 @@ using System.Threading.Tasks;
 namespace VV.Framework.Core
 {
     /// <summary>
-    /// Web 请求参数实体模型
+    /// 封装Web响应数据
     /// </summary>
-    public class WebRequestParameter
+    public class WebResponse
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Url { get; set; }
-
-
 
     }
 }
