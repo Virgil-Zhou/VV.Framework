@@ -6,10 +6,7 @@ using System.Threading.Tasks;
 
 namespace VV.Framework.Core
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public static class XMLUtility
+    public class FTPUtility
     {
 
     }

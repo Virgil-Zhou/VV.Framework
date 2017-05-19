@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VV.Framework.Core.Model
+namespace VV.Framework.Core
 {
     /// <summary>
     /// WebRequest的ContentType编码类型

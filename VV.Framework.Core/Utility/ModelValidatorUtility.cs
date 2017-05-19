@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VV.Framework.Core.Utility
+namespace VV.Framework.Core
 {
     /// <summary>
     /// 模型验证
