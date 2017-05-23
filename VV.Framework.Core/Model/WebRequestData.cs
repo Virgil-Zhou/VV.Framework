@@ -13,7 +13,7 @@ namespace VV.Framework.Core
     /// <summary>
     /// 封装Web请求数据
     /// </summary>
-    public class WebRequest
+    public class WebRequestData
     {
         /// <summary>
         /// 请求Url
@@ -44,7 +44,7 @@ namespace VV.Framework.Core
         /// <summary>
         /// HTTP请求头（K/V）集合
         /// </summary>
-        public IDictionary<string, string> Header { get; set; }
+        public IDictionary<string, string> Headers { get; set; }
 
         /// <summary>
         /// HTTP请求参数（K/V）集合

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Security;
@@ -17,9 +19,17 @@ namespace VV.Framework.Core
         /// 发送Web请求
         /// </summary>
         /// <param name="context">Web请求上下文</param>
-        public static void SendRequest(WebContext context)
+        /// <returns>返回WebContext对象</returns>
+        public static WebContext SendRequest(WebContext context)
         {
+            context.ThrowNullException();
 
+            CreateWebRequest(context);
+            InitRequestHeaders(context);
+            InitRequestPayload(context);
+            GetResponseResult(context);
+
+            return context;
         }
 
 
@@ -27,9 +37,17 @@ namespace VV.Framework.Core
         /// 发送Web请求
         /// </summary>
         /// <param name="context">Web请求上下文</param>
-        public async static void SendRequestAsync(WebContext context)
+        /// <returns>返回WebContext对象</returns>
+        public async static Task<WebContext> SendRequestAsync(WebContext context)
         {
+            context.ThrowNullException();
 
+            CreateWebRequest(context);
+            InitRequestHeaders(context);
+            await InitRequestPayloadAsync(context);
+            await GetResponseResultAsync(context);
+
+            return context;
         }
 
 
@@ -37,24 +55,357 @@ namespace VV.Framework.Core
         /// 创建HttpWebRequest对象
         /// </summary>
         /// <param name="context">Web请求上下文</param>
-        /// <returns>返回HttpWebRequest对象</returns>
-        private static HttpWebRequest CreateWebRequest(WebContext context)
+        private static void CreateWebRequest(WebContext context)
         {
-            var url = context.Request.Url.Trim();
+            context.ThrowNullException();
+
+            var url = context.RequestData.Url.Trim();
             if (url.StartsWith("https", StringComparison.CurrentCultureIgnoreCase))
             {
-                if (context.Request.RemoteCertificateValidation == null)
+                if (context.RequestData.RemoteCertificateValidation == null)
                 {
                     ServicePointManager.ServerCertificateValidationCallback =
                         new RemoteCertificateValidationCallback((sender, certificate, chain, sslPolicyErrors) => true);
                 }
                 else
                 {
-                    ServicePointManager.ServerCertificateValidationCallback = context.Request.RemoteCertificateValidation;
+                    ServicePointManager.ServerCertificateValidationCallback = context.RequestData.RemoteCertificateValidation;
                 }
             }
 
-            return (HttpWebRequest)System.Net.WebRequest.Create(url);
+            context.httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
         }
+
+
+        /// <summary>
+        /// 初始化请求报文头
+        /// </summary>
+        /// <param name="context">Web请求上下文</param>
+        private static void InitRequestHeaders(WebContext context)
+        {
+            context.ThrowNullException();
+
+            var requestData = context.RequestData;
+            var webRequest = context.httpWebRequest;
+
+            if (requestData.Method.IsNullOrEmpty())
+                requestData.Method = WebRequestMethods.Http.Get;
+
+            if (requestData.ContentType.IsNullOrEmpty())
+            {
+                requestData.ContentType = WebRequestContentType.FormUrlEncoded;
+            }
+            else if (string.Equals(requestData.ContentType, WebRequestContentType.MultipartForm, StringComparison.CurrentCultureIgnoreCase))
+            {
+                context.boundary = GenerateBoundary();
+                requestData.ContentType = $"multipart/form-data; boundary={context.boundary}";
+            }
+
+            webRequest.Accept = "*/*";
+            webRequest.Headers["Accept-Language"] = "zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3";
+            webRequest.Headers["Accept-Encoding"] = "gzip, deflate";
+            webRequest.Headers["Cache-Control"] = "no-cache";
+
+            webRequest.KeepAlive = requestData.KeepAlive;
+            webRequest.Method = requestData.Method;
+            webRequest.ContentType = requestData.ContentType;
+            webRequest.UserAgent = Constant.UserAgent;
+            webRequest.Timeout = (requestData.Timeout > 0 ? requestData.Timeout : 300) * 1000;
+            webRequest.ProtocolVersion = HttpVersion.Version11;
+
+            for (int i = 0; requestData.Headers != null && i < requestData.Headers.Count; i++)
+            {
+                string key = requestData.Headers.Keys.ElementAt(i),
+                     value = requestData.Headers[key];
+
+                webRequest.Headers.Add(key, value);
+            }
+
+            if (requestData.Certificate != null)
+            {
+                webRequest.ClientCertificates.Add(requestData.Certificate);
+            }
+
+            if (requestData.Cookies != null)
+            {
+                webRequest.CookieContainer = new CookieContainer();
+                webRequest.CookieContainer.Add(requestData.Cookies);
+            }
+        }
+
+
+        /// <summary>
+        /// 初始化请求报文体
+        /// </summary>
+        /// <param name="context">Web请求上下文</param>
+        private static void InitRequestPayload(WebContext context)
+        {
+            context.ThrowNullException();
+
+            var requestData = context.RequestData;
+            var webRequest = context.httpWebRequest;
+
+            // GET 请求参数跟 Url 一起传，但框架会提供扩展方法供其使用
+            if (string.Equals(requestData.Method, WebRequestMethods.Http.Get, StringComparison.CurrentCultureIgnoreCase)) return;
+
+            byte[] buffer;
+            if (string.Equals(webRequest.ContentType, WebRequestContentType.MultipartForm, StringComparison.CurrentCultureIgnoreCase))
+            {
+                buffer = BuildMultipartPostData(context);
+            }
+            else
+            {
+                var kvStr = KeyValuePair(requestData.Parameter);
+                buffer = Encoding.GetEncoding(requestData.RequestUseEncodeName).GetBytes(kvStr);
+            }
+
+            webRequest.ContentLength = buffer.Length;
+            using (var requestStream = webRequest.GetRequestStream())
+            {
+                requestStream.Write(buffer, 0, buffer.Length);
+            }
+        }
+
+
+        /// <summary>
+        /// 初始化请求报文体
+        /// </summary>
+        /// <param name="context">Web请求上下文</param>
+        private async static Task InitRequestPayloadAsync(WebContext context)
+        {
+            context.ThrowNullException();
+
+            var requestData = context.RequestData;
+            var webRequest = context.httpWebRequest;
+
+            // GET 请求参数跟 Url 一起传，但框架会提供扩展方法供其使用
+            if (string.Equals(requestData.Method, WebRequestMethods.Http.Get, StringComparison.CurrentCultureIgnoreCase)) return;
+
+            byte[] buffer;
+            if (string.Equals(webRequest.ContentType, WebRequestContentType.MultipartForm, StringComparison.CurrentCultureIgnoreCase))
+            {
+                buffer = BuildMultipartPostData(context);
+            }
+            else
+            {
+                var kvStr = KeyValuePair(requestData.Parameter);
+                buffer = Encoding.GetEncoding(requestData.RequestUseEncodeName).GetBytes(kvStr);
+            }
+
+            webRequest.ContentLength = buffer.Length;
+            using (var requestStream = await webRequest.GetRequestStreamAsync())
+            {
+                await requestStream.WriteAsync(buffer, 0, buffer.Length);
+            }
+        }
+
+
+        /// <summary>
+        /// 构建多表单Post数据
+        /// </summary>
+        /// <param name="context">Web请求上下文</param>
+        /// <returns>返回二进制的表单数据</returns>
+        private static byte[] BuildMultipartPostData(WebContext context)
+        {
+            context.ThrowNullException();
+
+            var payload = new StringBuilder(500);
+            var requestData = context.RequestData;
+            var encoding = Encoding.GetEncoding(requestData.RequestUseEncodeName);
+
+            for (int i = 0; requestData.Parameter != null && i < requestData.Parameter.Count; i++)
+            {
+                string key = requestData.Parameter.Keys.ElementAt(i),
+                     value = requestData.Parameter[key];
+
+                payload.AppendFormat("--{0}{1}", context.boundary, Environment.NewLine);
+                payload.AppendFormat("Content-Disposition: form-data; name=\"{0}\"{1}", key, Environment.NewLine);
+                payload.Append(Environment.NewLine);
+                payload.AppendLine(value);
+            }
+
+            if (payload.Length > 0 || (requestData.UploadFiles != null && requestData.UploadFiles.Length > 0))
+            {
+                using (var ms = new MemoryStream())
+                {
+                    using (var bw = new BinaryWriter(ms, encoding, true))
+                    {
+                        if (payload.Length > 0)
+                        {
+                            bw.Write(encoding.GetBytes(payload.ToString()));
+                        }
+
+                        for (int i = 0; requestData.UploadFiles != null && i < requestData.UploadFiles.Length; i++)
+                        {
+                            var fileData = requestData.UploadFiles[i];
+                            payload.Clear();
+                            payload.AppendFormat("--{0}{1}", context.boundary, Environment.NewLine);
+                            payload.AppendFormat("Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"{2}", fileData.Name, fileData.FileFullName, Environment.NewLine);
+                            payload.AppendFormat("Content-Type: {0}{1}", fileData.ContentType, Environment.NewLine);
+                            payload.Append(Environment.NewLine);
+                            bw.Write(encoding.GetBytes(payload.ToString()));
+                            bw.Write(fileData.FileBinary);
+                            bw.Write(encoding.GetBytes(Environment.NewLine));
+                        }
+
+                        bw.Write(encoding.GetBytes("--{0}--".Fmt(context.boundary)));
+                    }
+
+                    ms.Flush();
+                    ms.Position = 0;
+                    return ms.ToArray();
+                }
+            }
+
+            return new byte[0];
+        }
+
+
+        /// <summary>
+        /// 获取参数的键值对形式
+        /// </summary>
+        /// <param name="parameter">参数K/V集合</param>
+        /// <returns>返回键值对形式的参数字符串</returns>
+        private static string KeyValuePair(IDictionary<string, string> parameter)
+        {
+            if (parameter == null) return "";
+
+            var sb = new StringBuilder(200);
+            for (int i = 0; i < parameter.Keys.Count; i++)
+            {
+                string key = parameter.Keys.ElementAt(i),
+                     value = parameter[key];
+
+                if (i == 0)
+                    sb.AppendFormat("{0}={1}", key, value);
+                else
+                    sb.AppendFormat("&{0}={1}", key, value);
+            }
+
+            return sb.ToString();
+        }
+
+
+        /// <summary>
+        /// 生成边界值
+        /// </summary>
+        /// <returns></returns>
+        private static string GenerateBoundary()
+        {
+            var guid = Guid.NewGuid().ToString("N");
+            var md5Val = AlgorithmUtility.MD5Encryption(guid, true, 16);
+            return $"----WebKitFormBoundary{md5Val}";
+        }
+
+
+        /// <summary>
+        /// 获取响应结果
+        /// </summary>
+        /// <param name="context">Web请求上下文</param>
+        private static void GetResponseResult(WebContext context)
+        {
+            context.ThrowNullException();
+
+            try
+            {
+                context.httpWebResponse = (HttpWebResponse)context.httpWebRequest.GetResponse();
+                var stream = GetResponseStream(context);
+                var encoding = Encoding.GetEncoding(context.RequestData.ResponseUseEncodeName);
+
+                if (context.ContentType == ResponseContentType.Text)
+                {
+                    context.responseData.ResponseText = new StreamReader(stream, encoding).ReadToEnd();
+                }
+                else
+                {
+                    var buffer = new List<byte>();
+                    do
+                    {
+                        var val = stream.ReadByte();
+                        if (val == -1) break;
+                        buffer.Add((byte)val);
+
+                    } while (true);
+
+                    context.responseData.ResponseBinary = buffer.ToArray();
+                }
+            }
+            finally
+            {
+                if (context.httpWebResponse != null)
+                    context.httpWebResponse.Close();
+            }
+        }
+
+
+        /// <summary>
+        /// 获取响应结果
+        /// </summary>
+        /// <param name="context">Web请求上下文</param>
+        private async static Task GetResponseResultAsync(WebContext context)
+        {
+            context.ThrowNullException();
+
+            try
+            {
+                context.httpWebResponse = (HttpWebResponse)await context.httpWebRequest.GetResponseAsync();
+                var stream = GetResponseStream(context);
+                var encoding = Encoding.GetEncoding(context.RequestData.ResponseUseEncodeName);
+
+                if (context.ContentType == ResponseContentType.Text)
+                {
+                    context.responseData.ResponseText = new StreamReader(stream, encoding).ReadToEnd();
+                }
+                else
+                {
+                    var buffer = new List<byte>();
+                    do
+                    {
+                        var val = stream.ReadByte();
+                        if (val == -1) break;
+                        buffer.Add((byte)val);
+
+                    } while (true);
+
+                    context.responseData.ResponseBinary = buffer.ToArray();
+                }
+            }
+            finally
+            {
+                if (context.httpWebResponse != null)
+                    context.httpWebResponse.Close();
+            }
+        }
+
+
+        /// <summary>
+        /// 获取Web响应流
+        /// </summary>
+        /// <param name="context">Web请求上下文</param>
+        /// <returns>返回响应流</returns>
+        private static Stream GetResponseStream(WebContext context)
+        {
+            context.ThrowNullException();
+
+            Stream stream = null;
+            var webResponse = context.httpWebResponse;
+            var contentEncoding = webResponse.ContentEncoding.ToLower();
+
+            if (contentEncoding.Contains("gzip"))
+            {
+                stream = new GZipStream(webResponse.GetResponseStream(), CompressionMode.Decompress, false);
+            }
+            else if (contentEncoding.Contains("deflate"))
+            {
+                stream = new DeflateStream(webResponse.GetResponseStream(), CompressionMode.Decompress, false);
+            }
+            else
+            {
+                stream = webResponse.GetResponseStream();
+            }
+
+            return stream;
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,16 +12,66 @@ namespace VV.Framework.Core
     /// </summary>
     public class WebContext
     {
+        #region Constructors
+
+        public WebContext()
+        {
+            this.contentType = ResponseContentType.Text;
+        }
+
+        public WebContext(ResponseContentType contentType)
+        {
+            this.contentType = contentType;
+        }
+
+        #endregion
+
+        #region fields
+
         /// <summary>
-        /// Web请求数据
+        /// HttpWebRequest对象
         /// </summary>
-        public WebRequest Request { get; set; }
+        internal HttpWebRequest httpWebRequest;
+
+        /// <summary>
+        /// HttpWebResponse对象
+        /// </summary>
+        internal HttpWebResponse httpWebResponse;
+
+        /// <summary>
+        /// 用于Form请求的边界值
+        /// </summary>
+        internal string boundary;
 
         /// <summary>
         /// Web响应数据
         /// </summary>
-        public WebResponse Response { get; set; }
+        internal WebResponseData responseData;
 
+        /// <summary>
+        /// Web响应(内容)类型，默认为文本
+        /// </summary>
+        private ResponseContentType contentType;
 
+        #endregion
+
+        #region properties
+
+        /// <summary>
+        /// Web请求数据
+        /// </summary>
+        public WebRequestData RequestData { get; set; }
+
+        /// <summary>
+        /// Web响应(内容)类型，默认为文本
+        /// </summary>
+        public ResponseContentType ContentType => contentType;
+
+        /// <summary>
+        /// Web响应数据
+        /// </summary>
+        public WebResponseData ResponseData => responseData;
+
+        #endregion
     }
 }

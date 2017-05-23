@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VV.Framework.Core", "VV.Fra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VV.Framework.Balance", "VV.Framework.Balance\VV.Framework.Balance.csproj", "{AA8E35CA-E7EF-4AA9-94DC-8FF9EBC40C8C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "单元测试", "单元测试", "{87C6BA05-FA54-4A70-B741-6C14246D33FC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
