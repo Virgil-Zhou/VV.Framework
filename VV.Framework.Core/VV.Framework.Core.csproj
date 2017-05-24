@@ -54,6 +54,7 @@
     <Compile Include="Extension\StringExtension.cs" />
     <Compile Include="Extension\WebContextExtension.cs" />
     <Compile Include="FrameworkConfig.cs" />
+    <Compile Include="FrameworkDelegate.cs" />
     <Compile Include="Model\Constant.cs" />
     <Compile Include="Model\ImageFormat.cs" />
     <Compile Include="Model\ImageFormatCollection.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Service\Default\JsonSerializationService.cs" />
     <Compile Include="Service\ServiceCollection.cs" />
     <Compile Include="Service\ServiceContainer.cs" />
+    <Compile Include="Service\ServiceProvider.cs" />
     <Compile Include="Utility\AlgorithmUtility.cs" />
     <Compile Include="Utility\CompressionUtility.cs" />
     <Compile Include="Utility\EmailUtility.cs" />

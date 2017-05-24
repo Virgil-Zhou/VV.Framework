@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VV.Framework.Balance", "VV.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "单元测试", "单元测试", "{87C6BA05-FA54-4A70-B741-6C14246D33FC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VV.Framework.Core.Tests", "VV.Framework.Core.Tests\VV.Framework.Core.Tests.csproj", "{4F28BFE9-9C03-4C57-913A-9891C687393E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,8 +25,15 @@ Global
 		{AA8E35CA-E7EF-4AA9-94DC-8FF9EBC40C8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA8E35CA-E7EF-4AA9-94DC-8FF9EBC40C8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA8E35CA-E7EF-4AA9-94DC-8FF9EBC40C8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F28BFE9-9C03-4C57-913A-9891C687393E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F28BFE9-9C03-4C57-913A-9891C687393E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F28BFE9-9C03-4C57-913A-9891C687393E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F28BFE9-9C03-4C57-913A-9891C687393E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4F28BFE9-9C03-4C57-913A-9891C687393E} = {87C6BA05-FA54-4A70-B741-6C14246D33FC}
 	EndGlobalSection
 EndGlobal

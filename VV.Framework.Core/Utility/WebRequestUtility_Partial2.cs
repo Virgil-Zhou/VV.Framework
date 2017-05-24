@@ -15,6 +15,27 @@ namespace VV.Framework.Core
     /// </summary>
     public static partial class WebRequestUtility
     {
+        #region 初始化成员
+
+        private static event WebRequestHandler handler;
+        private static event WebRequestHandler handlerSync;
+        private static event WebRequestHandlerAsync handlerAsync;
+
+        static WebRequestUtility()
+        {
+            handler += CreateWebRequest;
+            handler += InitRequestHeaders;
+
+            handlerSync += InitRequestPayload;
+            handlerSync += GetResponseResult;
+
+            handlerAsync += InitRequestPayloadAsync;
+            handlerAsync += GetResponseResultAsync;
+        }
+
+        #endregion
+
+
         /// <summary>
         /// 发送Web请求
         /// </summary>
@@ -24,10 +45,8 @@ namespace VV.Framework.Core
         {
             context.ThrowNullException();
 
-            CreateWebRequest(context);
-            InitRequestHeaders(context);
-            InitRequestPayload(context);
-            GetResponseResult(context);
+            handler(context);
+            handlerSync(context);
 
             return context;
         }
@@ -42,10 +61,8 @@ namespace VV.Framework.Core
         {
             context.ThrowNullException();
 
-            CreateWebRequest(context);
-            InitRequestHeaders(context);
-            await InitRequestPayloadAsync(context);
-            await GetResponseResultAsync(context);
+            handler(context);
+            await handlerAsync(context);
 
             return context;
         }
@@ -78,7 +95,7 @@ namespace VV.Framework.Core
 
 
         /// <summary>
-        /// 初始化请求报文头
+        /// 初始化请求头
         /// </summary>
         /// <param name="context">Web请求上下文</param>
         private static void InitRequestHeaders(WebContext context)
@@ -135,7 +152,7 @@ namespace VV.Framework.Core
 
 
         /// <summary>
-        /// 初始化请求报文体
+        /// 初始化请求体
         /// </summary>
         /// <param name="context">Web请求上下文</param>
         private static void InitRequestPayload(WebContext context)
@@ -155,7 +172,7 @@ namespace VV.Framework.Core
             }
             else
             {
-                var kvStr = KeyValuePair(requestData.Parameter);
+                var kvStr = requestData.Parameter.KeyValuePair();
                 buffer = Encoding.GetEncoding(requestData.RequestUseEncodeName).GetBytes(kvStr);
             }
 
@@ -188,7 +205,7 @@ namespace VV.Framework.Core
             }
             else
             {
-                var kvStr = KeyValuePair(requestData.Parameter);
+                var kvStr = requestData.Parameter.KeyValuePair();
                 buffer = Encoding.GetEncoding(requestData.RequestUseEncodeName).GetBytes(kvStr);
             }
 
@@ -262,31 +279,6 @@ namespace VV.Framework.Core
 
 
         /// <summary>
-        /// 获取参数的键值对形式
-        /// </summary>
-        /// <param name="parameter">参数K/V集合</param>
-        /// <returns>返回键值对形式的参数字符串</returns>
-        private static string KeyValuePair(IDictionary<string, string> parameter)
-        {
-            if (parameter == null) return "";
-
-            var sb = new StringBuilder(200);
-            for (int i = 0; i < parameter.Keys.Count; i++)
-            {
-                string key = parameter.Keys.ElementAt(i),
-                     value = parameter[key];
-
-                if (i == 0)
-                    sb.AppendFormat("{0}={1}", key, value);
-                else
-                    sb.AppendFormat("&{0}={1}", key, value);
-            }
-
-            return sb.ToString();
-        }
-
-
-        /// <summary>
         /// 生成边界值
         /// </summary>
         /// <returns></returns>
@@ -354,14 +346,14 @@ namespace VV.Framework.Core
 
                 if (context.ContentType == ResponseContentType.Text)
                 {
-                    context.responseData.ResponseText = new StreamReader(stream, encoding).ReadToEnd();
+                    context.responseData.ResponseText = await new StreamReader(stream, encoding).ReadToEndAsync();
                 }
                 else
                 {
                     var buffer = new List<byte>();
                     do
                     {
-                        var val = stream.ReadByte();
+                        var val = stream.ReadByte(); // 有待改进为异步
                         if (val == -1) break;
                         buffer.Add((byte)val);
 

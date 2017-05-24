@@ -4,7 +4,6 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.String;
 
 namespace VV.Framework.Core
 {
@@ -19,21 +18,21 @@ namespace VV.Framework.Core
         /// <param name="str">源字符串</param>
         /// <param name="args">参数数组</param>
         /// <returns>格式化完的字符串</returns>
-        public static string Fmt(this string str, params object[] args) => Format(str, args);
+        public static string Fmt(this string str, params object[] args) => string.Format(str, args);
 
         /// <summary>
         /// 指示指定的字符串是 null 还是 System.String.Empty 字符串。
         /// </summary>
         /// <param name="str">要测试的字符串</param>
         /// <returns>如果 value 参数为 null 或空字符串 ("")，则为 true；否则为 false。</returns>
-        public static bool IsNullOrEmpty(this string str) => IsNullOrEmpty(str);
+        public static bool IsNullOrEmpty(this string str) => string.IsNullOrEmpty(str);
 
         /// <summary>
         /// 指示指定的字符串是 null、空还是仅由空白字符组成。
         /// </summary>
         /// <param name="str"> 要测试的字符串。</param>
         /// <returns>如果 value 参数为 null 或 System.String.Empty，或者如果 value 仅由空白字符组成，则为 true。</returns>
-        public static bool IsNullOrWhiteSpace(this string str) => IsNullOrWhiteSpace(str);
+        public static bool IsNullOrWhiteSpace(this string str) => string.IsNullOrWhiteSpace(str);
 
         /// <summary>
         /// Base64编码

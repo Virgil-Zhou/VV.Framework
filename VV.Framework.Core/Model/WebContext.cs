@@ -16,12 +16,12 @@ namespace VV.Framework.Core
 
         public WebContext()
         {
-            this.contentType = ResponseContentType.Text;
+            contentType = ResponseContentType.Text;
         }
 
-        public WebContext(ResponseContentType contentType)
+        public WebContext(ResponseContentType responseContentType)
         {
-            this.contentType = contentType;
+            contentType = responseContentType;
         }
 
         #endregion
@@ -44,14 +44,14 @@ namespace VV.Framework.Core
         internal string boundary;
 
         /// <summary>
-        /// Web响应数据
-        /// </summary>
-        internal WebResponseData responseData;
-
-        /// <summary>
         /// Web响应(内容)类型，默认为文本
         /// </summary>
         private ResponseContentType contentType;
+
+        /// <summary>
+        /// Web响应数据
+        /// </summary>
+        internal WebResponseData responseData = new WebResponseData();
 
         #endregion
 
