@@ -51,6 +51,7 @@
     <Compile Include="Extension\ByteExtension.cs" />
     <Compile Include="Extension\DecimalExtension.cs" />
     <Compile Include="Extension\DoubleExtension.cs" />
+    <Compile Include="Extension\IDictionaryExtension.cs" />
     <Compile Include="Extension\StringExtension.cs" />
     <Compile Include="Extension\WebContextExtension.cs" />
     <Compile Include="FrameworkConfig.cs" />
