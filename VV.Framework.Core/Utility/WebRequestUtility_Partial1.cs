@@ -528,8 +528,59 @@ namespace VV.Framework.Core
         }
 
 
+        /// <summary>
+        /// 发送表单请求
+        /// </summary>
+        /// <param name="url">网络资源地址</param>
+        /// <param name="timeout">超时时间</param>
+        /// <param name="keepAlive">是否建立持久连接</param>
+        /// <param name="headers">请求头信息（K/V），若无则为 null</param>
+        /// <param name="parameters">请求参数（K/V）集合</param>
+        /// <param name="requestUseEncodeName">请求使用的编码名称</param>
+        /// <param name="responseUseEncodeName">响应使用的编码名称</param>
+        /// <param name="uploadFiles">上载文件集合</param>
+        /// <returns>返回响应文本信息</returns>
+        public async static Task<string> FormRequestAsync(string url, int timeout, bool keepAlive, IDictionary<string, string> headers, IDictionary<string, string> parameters, string requestUseEncodeName, string responseUseEncodeName, params PostedFileData[] uploadFiles)
+        {
+            var context = new WebContext();
+
+            context.RequestData = new WebRequestData
+            {
+                Url = url,
+                Method = WebRequestMethods.Http.Post,
+                Timeout = timeout,
+                ContentType = WebRequestContentType.MultipartForm,
+                KeepAlive = keepAlive,
+                Headers = headers,
+                Parameter = parameters,
+                RequestUseEncodeName = requestUseEncodeName,
+                ResponseUseEncodeName = responseUseEncodeName,
+                UploadFiles = uploadFiles
+            };
+
+            return (await SendRequestAsync(context)).GetResult();
+        }
 
 
+        /// <summary>
+        /// 发送表单请求
+        /// </summary>
+        /// <typeparam name="T">返回(对象)类型</typeparam>
+        /// <param name="url">网络资源地址</param>
+        /// <param name="timeout">超时时间</param>
+        /// <param name="keepAlive">是否建立持久连接</param>
+        /// <param name="headers">请求头信息（K/V），若无则为 null</param>
+        /// <param name="parameters">请求参数（K/V）集合</param>
+        /// <param name="requestUseEncodeName">请求使用的编码名称</param>
+        /// <param name="responseUseEncodeName">响应使用的编码名称</param>
+        /// <param name="uploadFiles">上载文件集合</param>
+        /// <returns>返回T对象</returns>
+        public async static Task<T> FormRequestAsync<T>(string url, int timeout, bool keepAlive, IDictionary<string, string> headers, IDictionary<string, string> parameters, string requestUseEncodeName, string responseUseEncodeName, params PostedFileData[] uploadFiles) where T : class, new()
+        {
+            var content = await FormRequestAsync(url, timeout, keepAlive, headers, parameters, requestUseEncodeName, responseUseEncodeName, uploadFiles);
+
+            return ServiceProvider.JsonSerializer.Deserialize<T>(content);
+        }
 
     }
 }
