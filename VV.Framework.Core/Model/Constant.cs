@@ -15,5 +15,10 @@ namespace VV.Framework.Core
         /// 用户代理信息
         /// </summary>
         public const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36";
+
+        /// <summary>
+        /// UTF-8 编码名称
+        /// </summary>
+        public const string UTF8 = "UTF-8";
     }
 }
