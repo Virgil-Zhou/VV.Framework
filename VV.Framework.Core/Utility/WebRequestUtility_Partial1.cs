@@ -374,7 +374,7 @@ namespace VV.Framework.Core
                 throw new ArgumentNullException(nameof(filePath));
 
             if (!File.Exists(filePath))
-                throw new FileNotFoundException($"在路径：{filePath} 下未找到指定文件");
+                throw new FileNotFoundException($"未找到指定文件，路径：{filePath} ");
 
             var fileName = Path.GetFileName(filePath);
             using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -435,7 +435,7 @@ namespace VV.Framework.Core
                     throw new ArgumentNullException(nameof(path));
 
                 if (!File.Exists(path))
-                    throw new FileNotFoundException($"在路径：{path} 下未找到指定文件");
+                    throw new FileNotFoundException($"未找到指定文件，路径：{path} ");
 
                 using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
@@ -558,13 +558,13 @@ namespace VV.Framework.Core
 
 
         /// <summary>
-        /// 
+        /// 发送表单请求，超时时间：300 秒，默认编码：UTF-8
         /// </summary>
-        /// <param name="url"></param>
-        /// <param name="parameters"></param>
-        /// <param name="name"></param>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
+        /// <param name="url">网络资源地址</param>
+        /// <param name="parameters">请求参数（K/V）集合</param>
+        /// <param name="name">上载文件对应表单name属性名称</param>
+        /// <param name="filePath">文件的绝对路径</param>
+        /// <returns>返回响应文本信息</returns>
         public async static Task<string> FormRequestAsync(string url, IDictionary<string, string> parameters, string name, string filePath)
         {
             if (name.IsNullOrWhiteSpace())
@@ -574,7 +574,7 @@ namespace VV.Framework.Core
                 throw new ArgumentNullException(nameof(filePath));
 
             if (!File.Exists(filePath))
-                throw new FileNotFoundException($"在路径：{filePath} 下未找到指定文件");
+                throw new FileNotFoundException($"未找到指定文件，路径：{filePath} ");
 
             var fileName = Path.GetFileName(filePath);
             using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -596,15 +596,78 @@ namespace VV.Framework.Core
         /// <summary>
         /// 发送表单请求，超时时间：300 秒，默认编码：UTF-8
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="url"></param>
-        /// <param name="parameters"></param>
-        /// <param name="name"></param>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">返回(对象)类型</typeparam>
+        /// <param name="url">网络资源地址</param>
+        /// <param name="parameters">请求参数（K/V）集合</param>
+        /// <param name="name">上载文件对应表单name属性名称</param>
+        /// <param name="filePath">文件的绝对路径</param>
+        /// <returns>返回T对象</returns>
         public async static Task<T> FormRequestAsync<T>(string url, IDictionary<string, string> parameters, string name, string filePath) where T : class, new()
         {
             var content = await FormRequestAsync(url, parameters, name, filePath);
+
+            return ServiceProvider.JsonSerializer.Deserialize<T>(content);
+        }
+
+
+        /// <summary>
+        /// 发送表单请求，超时时间：300 秒，默认编码：UTF-8
+        /// </summary>
+        /// <param name="url">网络资源地址</param>
+        /// <param name="parameters">请求参数（K/V）集合</param>
+        /// <param name="fileDic">上载文件字典集合，key为表单对应name属性名称，value为该文件的绝对路径</param>
+        /// <returns></returns>
+        public async static Task<string> FormRequestAsync(string url, IDictionary<string, string> parameters, IDictionary<string, string> fileDic)
+        {
+            List<PostedFileData> fileList = null;
+            for (int i = 0; fileDic != null && i < fileDic.Keys.Count; i++)
+            {
+                if (fileList == null)
+                    fileList = new List<PostedFileData>();
+
+                string name = fileDic.Keys.ElementAt(i),
+                       path = fileDic[name];
+
+                if (name.IsNullOrWhiteSpace())
+                    throw new ArgumentNullException(nameof(name));
+
+                if (path.IsNullOrWhiteSpace())
+                    throw new ArgumentNullException(nameof(path));
+
+                if (!File.Exists(path))
+                    throw new FileNotFoundException($"未找到指定文件，路径：{path} ");
+
+                using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    byte[] buffer = new byte[fs.Length];
+                    await fs.ReadAsync(buffer, 0, buffer.Length);
+
+                    var fileName = Path.GetFileName(path);
+                    fileList.Add(new PostedFileData
+                    {
+                        Name = name,
+                        FileFullName = fileName,
+                        ContentType = MimeMapping.GetMimeMapping(fileName),
+                        FileBinary = buffer
+                    });
+                }
+            }
+
+            return await FormRequestAsync(url, parameters, fileList == null ? null : fileList.ToArray());
+        }
+
+
+        /// <summary>
+        /// 发送表单请求，超时时间：300 秒，默认编码：UTF-8
+        /// </summary>
+        /// <typeparam name="T">返回(对象)类型</typeparam>
+        /// <param name="url">网络资源地址</param>
+        /// <param name="parameters">请求参数（K/V）集合</param>
+        /// <param name="fileDic">上载文件字典集合，key为表单对应name属性名称，value为该文件的绝对路径</param>
+        /// <returns>返回T对象</returns>
+        public async static Task<T> FormRequestAsync<T>(string url, IDictionary<string, string> parameters, IDictionary<string, string> fileDic) where T : class, new()
+        {
+            var content = await FormRequestAsync(url, parameters, fileDic);
 
             return ServiceProvider.JsonSerializer.Deserialize<T>(content);
         }
