@@ -30,7 +30,7 @@ namespace VV.Framework.Core.Tests
         [TestMethod()]
         public void FormRequestTest()
         {
-            var url = "http://localhost:13050/api/file/upload";
+            var url = "http://localhost:13052/api/file/upload";
 
             var parameters = new Dictionary<string, string>
             {
@@ -48,6 +48,21 @@ namespace VV.Framework.Core.Tests
             var fileCount = WebRequestUtility.FormRequest(url, parameters, fileDic);
 
             Assert.IsTrue(fileCount == "3");
+        }
+
+        [TestMethod()]
+        public void PostTest1()
+        {
+            var url = "http://localhost:13052/api/file/Print";
+            var parameters = new Dictionary<string, string>
+            {
+                ["Phone"] = "18620706258",
+                ["Name"] = "Virgil"
+            };
+
+            var content = WebRequestUtility.Post(url, parameters);
+
+            Assert.IsTrue(content == "Virgil,18620706258");
         }
     }
 }
