@@ -166,7 +166,7 @@ namespace VV.Framework.Core
             if (string.Equals(requestData.Method, WebRequestMethods.Http.Get, StringComparison.CurrentCultureIgnoreCase)) return;
 
             byte[] buffer;
-            if (string.Equals(webRequest.ContentType, WebRequestContentType.MultipartForm, StringComparison.CurrentCultureIgnoreCase))
+            if (webRequest.ContentType.StartsWith(WebRequestContentType.MultipartForm, StringComparison.CurrentCultureIgnoreCase))
             {
                 buffer = BuildMultipartPostData(context);
             }
@@ -199,7 +199,7 @@ namespace VV.Framework.Core
             if (string.Equals(requestData.Method, WebRequestMethods.Http.Get, StringComparison.CurrentCultureIgnoreCase)) return;
 
             byte[] buffer;
-            if (string.Equals(webRequest.ContentType, WebRequestContentType.MultipartForm, StringComparison.CurrentCultureIgnoreCase))
+            if (webRequest.ContentType.StartsWith(WebRequestContentType.MultipartForm, StringComparison.CurrentCultureIgnoreCase))
             {
                 buffer = BuildMultipartPostData(context);
             }

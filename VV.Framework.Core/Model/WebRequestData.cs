@@ -32,7 +32,7 @@ namespace VV.Framework.Core
         public int Timeout { get; set; }
 
         /// <summary>
-        /// 内容的编码类型
+        /// 内容的编码类型，请使用 WebRequestContentType 的枚举成员
         /// </summary>
         public string ContentType { get; set; }
 
