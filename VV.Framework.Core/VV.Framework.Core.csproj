@@ -48,6 +48,7 @@
     <Compile Include="Attribute\DefaultServiceAttribute.cs" />
     <Compile Include="API\ICache.cs" />
     <Compile Include="Attribute\RequiredThrowAttribute.cs" />
+    <Compile Include="Cache\LocalCache.cs" />
     <Compile Include="Extension\ByteExtension.cs" />
     <Compile Include="Extension\DecimalExtension.cs" />
     <Compile Include="Extension\DoubleExtension.cs" />
@@ -83,8 +84,6 @@
     <Compile Include="Utility\WebRequestUtility_Partial2.cs" />
     <Compile Include="Utility\XMLUtility.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Cache\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
