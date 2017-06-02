@@ -17,17 +17,5 @@ namespace VV.Framework.Core
         {
 
         }
-
-
-        public override bool Match(object obj)
-        {
-            return base.Match(obj);
-        }
-
-
-        public override bool IsDefaultAttribute()
-        {
-            return base.IsDefaultAttribute();
-        }
     }
 }

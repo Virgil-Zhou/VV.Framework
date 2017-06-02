@@ -84,6 +84,7 @@
     <Compile Include="Utility\ImageUtility.cs" />
     <Compile Include="Utility\ModelValidatorUtility.cs" />
     <Compile Include="Utility\RegexUtility.cs" />
+    <Compile Include="Utility\ValidateUtility.cs" />
     <Compile Include="Utility\WebRequestUtility_Partial1.cs" />
     <Compile Include="Utility\WebRequestUtility_Partial2.cs" />
     <Compile Include="Utility\XMLUtility.cs" />
