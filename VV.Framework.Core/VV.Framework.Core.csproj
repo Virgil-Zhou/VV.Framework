@@ -45,6 +45,10 @@
   <ItemGroup>
     <Compile Include="API\IJsonSerialization.cs" />
     <Compile Include="API\IService.cs" />
+    <Compile Include="API\Proxy\IMemcacheProxy.cs" />
+    <Compile Include="API\Proxy\IMongoProxy.cs" />
+    <Compile Include="API\Proxy\IRabbitProxy.cs" />
+    <Compile Include="API\Proxy\IRedisProxy.cs" />
     <Compile Include="Attribute\DefaultServiceAttribute.cs" />
     <Compile Include="API\ICache.cs" />
     <Compile Include="Attribute\RequiredThrowAttribute.cs" />

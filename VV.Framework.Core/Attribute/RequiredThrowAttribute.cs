@@ -10,19 +10,23 @@ namespace VV.Framework.Core
     /// <summary>
     /// 
     /// </summary>
-    public class RequiredThrowAttribute : ValidationAttribute
+    public class RequiredThrowAttribute : Attribute
     {
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        public RequiredThrowAttribute()
         {
-            switch (value)
-            {
-                case string str when str.IsNullOrWhiteSpace():
-                    throw new ArgumentNullException(nameof(validationContext.MemberName), $"字段：{validationContext.MemberName} 是必须的。");
-                case object obj when obj == null:
-                    throw new ArgumentNullException(nameof(validationContext.MemberName), $"字段：{validationContext.MemberName} 是必须的。");
-            }
 
-            return base.IsValid(value, validationContext);
+        }
+
+
+        public override bool Match(object obj)
+        {
+            return base.Match(obj);
+        }
+
+
+        public override bool IsDefaultAttribute()
+        {
+            return base.IsDefaultAttribute();
         }
     }
 }
