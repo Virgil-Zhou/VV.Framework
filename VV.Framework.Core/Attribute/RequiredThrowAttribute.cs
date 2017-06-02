@@ -10,6 +10,7 @@ namespace VV.Framework.Core
     /// <summary>
     /// 
     /// </summary>
+    [AttributeUsage(AttributeTargets.Property)]
     public class RequiredThrowAttribute : Attribute
     {
         public RequiredThrowAttribute()
